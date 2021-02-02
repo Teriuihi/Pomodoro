@@ -58,6 +58,7 @@ public class Database {
     private static void createGuildTable() throws SQLException {
         String query = "CREATE TABLE IF NOT EXISTS guilds" +
                 "(guild_id BIGINT NOT NULL," +
+                "prefix CHAR(1) DEFAULT '!'," +
                 "PRIMARY KEY (guild_id))";
 
         connection.prepareStatement(query).execute();
