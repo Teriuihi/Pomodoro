@@ -2,9 +2,7 @@ package com.teri.alttd.Initiate;
 
 import com.teri.alttd.FileManagement.Log;
 import com.teri.alttd.Main;
-import com.teri.alttd.Queries.GetGuildsQuery;
-import com.teri.alttd.Queries.GuildJoinQuery;
-import com.teri.alttd.Queries.GuildLeaveQuery;
+import com.teri.alttd.Queries.GuildQueries;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.ArrayList;
@@ -26,7 +24,7 @@ public class UpdateGuildsInDatabase implements Runnable {
             e.printStackTrace();
         }
 
-        ArrayList<Long> guildIds = GetGuildsQuery.run();
+        ArrayList<Long> guildIds = GuildQueries.getAllGuilds();
         ArrayList<Long> joinedGuildIds = new ArrayList<>();
 
         for (Guild guild : Main.jda.getGuilds()){
@@ -38,8 +36,8 @@ public class UpdateGuildsInDatabase implements Runnable {
             }
         }
 
-        GuildLeaveQuery.run(guildIds); //Remove all guilds that weren't cached but were in the database.
-        GuildJoinQuery.run(joinedGuildIds); //Add all guilds that were in the cache but not in the database.
+        GuildQueries.guildLeave(guildIds); //Remove all guilds that weren't cached but were in the database.
+        GuildQueries.guildJoin(joinedGuildIds); //Add all guilds that were in the cache but not in the database.
     }
 
 }
