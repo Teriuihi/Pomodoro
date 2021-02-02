@@ -33,7 +33,7 @@ public class Main {
 
         try {
             jda = JDABuilder.createDefault(config.getProperty("JDA.token")).build(); //Start the DiscordBot.
-            JDAInit.run();
+            JDAInit.run(); //Initiate all the listeners
         } catch (LoginException e) {
             new Log(Log.LogType.ERROR).appendLog(e.getStackTrace());
             e.printStackTrace();
@@ -42,9 +42,10 @@ public class Main {
             new Log(Log.LogType.SHUTDOWN).appendLog("Unable to log in, is the token correct?");
 
             System.exit(0); //Close the bot because it's not usable if we can't log in
+            return;
         }
 
-        UpdateGuildsInDatabase.run(); //Update the database with any guilds we joined/left while we were down.
+        new Thread(new UpdateGuildsInDatabase()).run(); //Update the database with any guilds we joined/left while we were down.
     }
 
 }
