@@ -1,0 +1,18 @@
+TODO:
+ Commands:
+ - pom start command
+ - pom pause/continue commands
+ - pom stop command
+ - command to schedule study sessions
+ - command to list active study sessions
+ - command to list all study sessions (active and scheduled)
+ Cache:
+ - A list of all guilds along with the GroupTimer objects (name might change)
+ Other:
+ - Roles for active pom's
+ - Make roles joinable for public study sessions
+ - Make roles invite only for private study sessions
+ - Ping when pom break start/ends
+ - Ping when the pom ends
+ - Accountability channel (keep points for achievements)
+ - Reminders
