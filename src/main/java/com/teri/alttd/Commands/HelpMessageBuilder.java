@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.awt.Color;
+import java.text.MessageFormat;
 
 public class HelpMessageBuilder {
 
@@ -20,14 +21,14 @@ public class HelpMessageBuilder {
                         "start a study session at February 22nd 2021 at 4 PM UTC, everyone will be able to join it and the topic " +
                         "would be Programming in Java."),
         POM_START("Pom Start Command",
-                "Command description - Start a pomodoro session, keep in mind time is in minutes." +
+                "Command description - Start a pomodoro session, keep in mind time is in minutes.\n" +
                         "Command usage - `{0}pom start <work time> <break time> <number of cycles>`\n" +
                         "Example usage - `{0}pom start 20 5 4` This would start a 20 minute work session with 5 minute breaks, 4 times."),
         POM_PAUSE("Pom Pause Command",
-                          "Command description - Pause a pomodoro session." +
+                          "Command description - Pause a pomodoro session.\n" +
                           "Command usage - `{0}pom pause` Pauses a pomodoro session until it is continued with `{0}pom continue`."),
         POM_STOP("Pom Stop Command",
-                          "Command description - Stops a pomodoro session." +
+                          "Command description - Stops a pomodoro session.\n" +
                           "Command usage - `{0}pom stop` Stops a pomodoro session and cancels it.");
 
         private final String helpTitle;
@@ -50,7 +51,7 @@ public class HelpMessageBuilder {
 
         embedBuilder.setColor(Color.magenta);
         embedBuilder.setTitle(title);
-        embedBuilder.addField(helpType.helpTitle, String.format(helpType.helpMessage, prefix), false);
+        embedBuilder.addField(helpType.helpTitle, MessageFormat.format(helpType.helpMessage, prefix), false);
 
         return embedBuilder.build();
     }
@@ -67,7 +68,7 @@ public class HelpMessageBuilder {
         embedBuilder.setTitle(title);
 
         for (HelpType helpType : HelpType.values()){
-            embedBuilder.addField(helpType.helpTitle, String.format(helpType.helpMessage, prefix), false);
+            embedBuilder.addField(helpType.helpTitle, MessageFormat.format(helpType.helpMessage, prefix), false);
         }
 
         return embedBuilder.build();
