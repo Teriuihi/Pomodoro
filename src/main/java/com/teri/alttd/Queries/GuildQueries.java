@@ -7,16 +7,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GuildQueries {
     static final String guildLeave = "DELETE FROM guilds WHERE guild_id = ?";
     static final String guildJoin = "INSERT INTO guilds (guild_id) VALUES (?)";
     static final String getAllGuilds = "SELECT guild_id FROM guilds";
+    static final String getAllGuildPrefixes = "SELECT guild_id,prefix FROM guilds";
 
     //Get guilds -------------------------------------------------------------------------------------------------------
 
     /**
      * Get all guild ids stored in the database.
+     * @return all guild id's in an ArrayList
      */
     public static ArrayList<Long> getAllGuilds(){
 
@@ -37,6 +40,31 @@ public class GuildQueries {
         }
 
         return guildIds;
+    }
+
+    /**
+     * Get all guild prefixes mapped to their guild id
+     * @return All guild prefixes in a HashMap mapped to their guildId
+     */
+    public static HashMap<Long, Character> getAllGuildPrefixes(){
+
+        HashMap<Long, Character> guilds = new HashMap<>();
+
+        try {
+            PreparedStatement statement = Database.connection.prepareStatement(getAllGuildPrefixes);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()){
+                guilds.put(resultSet.getLong("guild_id"), resultSet.getString("prefix").charAt(0));
+            }
+
+        } catch (SQLException e) {
+            new Log(Log.LogType.SQL).appendLog(e.getStackTrace());
+            e.printStackTrace();
+        }
+
+        return guilds;
     }
 
     //Join guilds ------------------------------------------------------------------------------------------------------
