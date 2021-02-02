@@ -13,7 +13,8 @@ public class GuildQueries {
     static final String guildLeave = "DELETE FROM guilds WHERE guild_id = ?";
     static final String guildJoin = "INSERT INTO guilds (guild_id) VALUES (?)";
     static final String getAllGuilds = "SELECT guild_id FROM guilds";
-    static final String getAllGuildPrefixes = "SELECT guild_id,prefix FROM guilds";
+    static final String getAllGuildPrefixes = "SELECT guild_id, prefix FROM guilds";
+    static final String guildUpdate = "INSERT INTO guilds (guild_id, prefix) VALUES(?, ?) ON DUPLICATE KEY UPDATE prefix = ?";
 
     //Get guilds -------------------------------------------------------------------------------------------------------
 
@@ -155,5 +156,24 @@ public class GuildQueries {
         }
     }
 
+    //Update guilds ----------------------------------------------------------------------------------------------------
+
+    public static void guildUpdate(long guildId, char prefix) {
+        try {
+            PreparedStatement statement = Database.connection.prepareStatement(guildUpdate);
+
+            statement.setLong(1, guildId);
+            statement.setString(2, String.valueOf(prefix));
+            statement.setString(3, String.valueOf(prefix));
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            new Log(Log.LogType.SQL).appendLog(e.getStackTrace());
+            e.printStackTrace();
+        }
+    }
+
     //------------------------------------------------------------------------------------------------------------------
+
 }
