@@ -31,6 +31,10 @@ public class GuildLeaveQuery {
      * @param guildIds List of guild ids to remove.
      */
     public static void run(ArrayList<Long> guildIds) {
+        if (guildIds.isEmpty()){
+            return;
+        }
+
         try {
             PreparedStatement statement = Database.connection.prepareStatement(query);
 

@@ -32,6 +32,10 @@ public class GuildJoinQuery {
      * @param guildIds List of guild ids to add.
      */
     public static void run(ArrayList<Long> guildIds) {
+        if (guildIds.isEmpty()){
+            return;
+        }
+
         try {
             PreparedStatement statement = Database.connection.prepareStatement(query);
 
