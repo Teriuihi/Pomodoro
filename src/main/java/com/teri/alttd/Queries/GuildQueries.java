@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class GuildQueries {
     static final String guildLeave = "DELETE FROM guilds WHERE guild_id = ?";
-    static final String guildJoin = "INSERT INTO guilds VALUES (?)";
+    static final String guildJoin = "INSERT INTO guilds (guild_id) VALUES (?)";
     static final String getAllGuilds = "SELECT guild_id FROM guilds";
 
     //Get guilds -------------------------------------------------------------------------------------------------------
