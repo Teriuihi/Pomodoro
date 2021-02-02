@@ -33,6 +33,7 @@ public class GuildQueries {
 
         } catch (SQLException e) {
             new Log(Log.LogType.SQL).appendLog(e.getStackTrace());
+            e.printStackTrace();
         }
 
         return guildIds;
@@ -53,6 +54,7 @@ public class GuildQueries {
             statement.execute();
         } catch (SQLException e) {
             new Log(Log.LogType.SQL).appendLog(e.getStackTrace());
+            e.printStackTrace();
         }
     }
 
@@ -77,6 +79,7 @@ public class GuildQueries {
 
         } catch (SQLException e) {
             new Log(Log.LogType.SQL).appendLog(e.getStackTrace());
+            e.printStackTrace();
         }
     }
 
@@ -95,6 +98,7 @@ public class GuildQueries {
             statement.execute();
         } catch (SQLException e) {
             new Log(Log.LogType.SQL).appendLog(e.getStackTrace());
+            e.printStackTrace();
         }
     }
 
@@ -119,6 +123,7 @@ public class GuildQueries {
 
         } catch (SQLException e) {
             new Log(Log.LogType.SQL).appendLog(e.getStackTrace());
+            e.printStackTrace();
         }
     }
 
