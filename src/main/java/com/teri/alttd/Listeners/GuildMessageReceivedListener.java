@@ -18,28 +18,36 @@ public class GuildMessageReceivedListener extends ListenerAdapter {
         String[] split = event.getMessage().getContentRaw().toLowerCase().split(" ");
 
         if (event.getMember() == null || !correctPrefix(event.getMessage(), event.getMember().isOwner(), split)){
-            return;
+            return; //If there is no member in the event, or the message does not start with the correct prefix we can exit
         }
 
-        String[] args = Arrays.copyOfRange(split, 1, split.length);
-        String command = split[0];
+        String[] args = Arrays.copyOfRange(split, 1, split.length); //Command arguments (without the command)
+        String command = split[0]; //The command
 
         if (command.length() < 1){
-            return;
+            return; //If the command is only one character long it can't be a command
         }
 
-        char prefix = command.charAt(0);
-        command = command.substring(1);
+        char prefix = command.charAt(0); //The prefix is the first character of the command
+        command = command.substring(1); //The rest of the string is the command
 
-        switch (command){
+        switch (command){ //Check what command was send and send relevant data where it needs to go to execute the command
             case "study":
                 new Study(command, args, event).runCommand(prefix);
                 break;
             case "help":
                 event.getChannel().sendMessage(HelpMessageBuilder.buildMessage(prefix)).queue();
+                break;
         }
     }
 
+    /**
+     * Checks if the prefix is correct, if it isn't it checks if the bot got tagged by the server owner in case they want to change the prefix
+     * @param message The message that got send
+     * @param isOwner If the user who send the message is the owner or not
+     * @param args The message split by spaces
+     * @return true if the correct prefix was used, false in every other case
+     */
     private boolean correctPrefix(Message message, boolean isOwner, String[] args) {
         String contentRaw = message.getContentRaw();
 
@@ -52,6 +60,7 @@ public class GuildMessageReceivedListener extends ListenerAdapter {
                 //If the owner sends a message without a prefix check if they tagged us
                 User user = message.getMentionedUsers().get(0);
                 //If they did, check if they are trying to set a prefix\
+
                 if (user.getIdLong() == Main.jda.getSelfUser().getIdLong()
                         && args.length == 3
                         && args[1].equalsIgnoreCase("prefix")){
