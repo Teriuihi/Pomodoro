@@ -158,6 +158,11 @@ public class GuildQueries {
 
     //Update guilds ----------------------------------------------------------------------------------------------------
 
+    /**
+     * Updates the entry for this guild (and if it doesn't exist it creates it)
+     * @param guildId The id of the guild to update
+     * @param prefix The new prefix
+     */
     public static void guildUpdate(long guildId, char prefix) {
         try {
             PreparedStatement statement = Database.connection.prepareStatement(guildUpdate);
