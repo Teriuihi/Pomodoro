@@ -1,5 +1,6 @@
 package com.teri.alttd.Initiate;
 
+import com.teri.alttd.Cache.Prefixes;
 import com.teri.alttd.FileManagement.Log;
 import com.teri.alttd.Main;
 import com.teri.alttd.Queries.GuildQueries;
@@ -38,6 +39,7 @@ public class UpdateGuildsInDatabase implements Runnable {
 
         GuildQueries.guildLeave(guildIds); //Remove all guilds that weren't cached but were in the database.
         GuildQueries.guildJoin(joinedGuildIds); //Add all guilds that were in the cache but not in the database.
+        Prefixes.loadGuildPrefixes(); //Load all prefixes into the cache now that the database is up to date
     }
 
 }
