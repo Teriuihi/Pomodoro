@@ -1,5 +1,6 @@
 package com.teri.alttd.Initiate;
 
+import com.teri.alttd.FileManagement.Log;
 import com.teri.alttd.Main;
 import com.teri.alttd.Queries.GetGuildsQuery;
 import com.teri.alttd.Queries.GuildJoinQuery;
@@ -8,7 +9,7 @@ import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.ArrayList;
 
-public class UpdateGuildsInDatabase {
+public class UpdateGuildsInDatabase implements Runnable {
 
     /**
      * Go through all cached guilds and compare them to the guilds stored in the database.
@@ -16,7 +17,15 @@ public class UpdateGuildsInDatabase {
      * If there are any guilds that are not cached but are in the db leave them in the list we got form the db, remove the rest.
      * Remove the guilds we left from the db, add the guilds we joined to the db.
      */
-    public static void run(){
+    public void run(){
+
+        try {
+            Main.jda.awaitReady();
+        } catch (InterruptedException e) {
+            new Log(Log.LogType.ERROR).appendLog(e.getStackTrace());
+            e.printStackTrace();
+        }
+
         ArrayList<Long> guildIds = GetGuildsQuery.run();
         ArrayList<Long> joinedGuildIds = new ArrayList<>();
 
