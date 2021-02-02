@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GuildQueries {
-    static final String guildLeave = "DELETE FROM guilds WHERE guild_id = ?";
-    static final String guildJoin = "INSERT INTO guilds (guild_id) VALUES (?)";
-    static final String getAllGuilds = "SELECT guild_id FROM guilds";
-    static final String getAllGuildPrefixes = "SELECT guild_id, prefix FROM guilds";
-    static final String guildUpdate = "INSERT INTO guilds (guild_id, prefix) VALUES(?, ?) ON DUPLICATE KEY UPDATE prefix = ?";
+    private static final String guildLeave = "DELETE FROM guilds WHERE guild_id = ?";
+    private static final String guildJoin = "INSERT INTO guilds (guild_id) VALUES (?)";
+    private static final String getAllGuilds = "SELECT guild_id FROM guilds";
+    private static final String getAllGuildPrefixes = "SELECT guild_id, prefix FROM guilds";
+    private static final String guildUpdate = "INSERT INTO guilds (guild_id, prefix) VALUES(?, ?) ON DUPLICATE KEY UPDATE prefix = ?";
 
     //Get guilds -------------------------------------------------------------------------------------------------------
 
