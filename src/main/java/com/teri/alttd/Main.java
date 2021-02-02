@@ -45,7 +45,7 @@ public class Main {
             return;
         }
 
-        new Thread(new UpdateGuildsInDatabase()).run(); //Update the database with any guilds we joined/left while we were down.
+        new Thread(new UpdateGuildsInDatabase()).start(); //Update the database with any guilds we joined/left while we were down.
     }
 
 }
