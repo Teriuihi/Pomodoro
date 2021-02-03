@@ -1,4 +1,4 @@
-package com.teri.alttd.Commands;
+package com.teri.alttd.Utilities;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -25,8 +25,11 @@ public class HelpMessageBuilder {
                         "Command usage - `{0}pom start <work time> <break time> <number of cycles>`\n" +
                         "Example usage - `{0}pom start 20 5 4` This would start a 20 minute work session with 5 minute breaks, 4 times."),
         POM_PAUSE("Pom Pause Command",
-                          "Command description - Pause a pomodoro session.\n" +
-                          "Command usage - `{0}pom pause` Pauses a pomodoro session until it is continued with `{0}pom continue`."),
+                          "Command description - Pause a pomodoro session until it is continued with `{0}pom continue`..\n" +
+                          "Command usage - `{0}pom pause`"),
+        POM_CONTINUE("Pom Continue Command",
+                "Command description - Continue a pomodoro session after it was paused.\n" +
+                        "Command usage - `{0}pom continue`"),
         POM_STOP("Pom Stop Command",
                           "Command description - Stops a pomodoro session.\n" +
                           "Command usage - `{0}pom stop` Stops a pomodoro session and cancels it.");
@@ -42,16 +45,18 @@ public class HelpMessageBuilder {
 
     /**
      * Build the help message for the specified HelpType.
-     * @param helpType the help type to build the help message for.
      * @param prefix the prefix the server that the message is for is using.
+     * @param helpTypes the help types to build the help message for.
      * @return The help message for the specified HelpType.
      */
-    public static MessageEmbed buildMessage(HelpType helpType, char prefix){
+    public static MessageEmbed buildMessage( char prefix, HelpType... helpTypes){
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
         embedBuilder.setColor(Color.magenta);
         embedBuilder.setTitle(title);
-        embedBuilder.addField(helpType.helpTitle, MessageFormat.format(helpType.helpMessage, prefix), false);
+        for (HelpType helpType : helpTypes) {
+            embedBuilder.addField(helpType.helpTitle, MessageFormat.format(helpType.helpMessage, prefix), false);
+        }
 
         return embedBuilder.build();
     }
