@@ -1,9 +1,11 @@
 package com.teri.alttd.Listeners;
 
 import com.teri.alttd.Cache.Prefixes;
-import com.teri.alttd.Commands.HelpMessageBuilder;
-import com.teri.alttd.Commands.Study;
+import com.teri.alttd.Utilities.HelpMessageBuilder;
+import com.teri.alttd.Commands.PomCommand;
+import com.teri.alttd.Commands.StudyCommand;
 import com.teri.alttd.Main;
+import com.teri.alttd.Utilities.NoPermission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -33,11 +35,27 @@ public class GuildMessageReceivedListener extends ListenerAdapter {
 
         switch (command){ //Check what command was send and send relevant data where it needs to go to execute the command
             case "study":
-                new Study(command, args, event).runCommand(prefix);
+                if (cantWrite(event)) return;
+                new StudyCommand(command, args, event).runCommand(prefix);
+                break;
+            case "pom":
+                if (cantWrite(event)) return;
+                new PomCommand(command, args, event).runCommand(prefix);
                 break;
             case "help":
+                if (cantWrite(event)) return;
                 event.getChannel().sendMessage(HelpMessageBuilder.buildMessage(prefix)).queue();
                 break;
+        }
+    }
+
+    private boolean cantWrite(GuildMessageReceivedEvent event) {
+        if (event.getChannel().canTalk()){
+            return false;
+        } else {
+            event.getMember().getUser().openPrivateChannel().queue(a -> NoPermission
+                    .sendMessage(a, NoPermission.Permission.WRITE, event.getGuild().getName(), event.getChannel().getName()));
+            return true;
         }
     }
 
