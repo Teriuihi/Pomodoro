@@ -22,7 +22,7 @@ public class PomGroups {
      * @param pomId id of the pom you want to retrieve
      * @return the pom belonging to the pomId
      */
-    public static Pom getPom(long pomId) {
+    public static Pom getPom(int pomId) {
         return pomGroups.get(pomId);
     }
 
