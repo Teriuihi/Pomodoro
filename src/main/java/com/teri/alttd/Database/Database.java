@@ -43,6 +43,8 @@ public class Database {
 
         try {
             createGuildTable();
+            createPomTable();
+            createUsersTable();
         } catch (SQLException e) {
             new Log(Log.LogType.SQL).appendLog(e.getStackTrace());
             e.printStackTrace();
@@ -53,13 +55,37 @@ public class Database {
     /**
      * Create guild table if it doesn't exist.
      * This table holds all the guild id's.
-     * @throws SQLException
+     * @throws SQLException on query error or connection error
      */
     private static void createGuildTable() throws SQLException {
         String query = "CREATE TABLE IF NOT EXISTS guilds" +
-                "(guild_id BIGINT NOT NULL," +
-                "prefix CHAR(1) DEFAULT '!'," +
+                "(guild_id BIGINT NOT NULL, " +
+                "prefix CHAR(1) DEFAULT '!', " +
                 "PRIMARY KEY (guild_id))";
+
+        connection.prepareStatement(query).execute();
+    }
+
+    private static void createPomTable() throws SQLException {
+        String query = "CREATE TABLE IF NOT EXISTS active_poms" +
+                "(pom_id INT NOT NULL AUTO_INCREMENT, " +
+                "owner_id BIGINT NOT NULL, " +
+                "session_length INT NOT NULL, " +
+                "break_length INT NOT NULL, " +
+                "cycles_amount INT NOT NULL, " +
+                "guild_id BIGINT NOT NULL, " +
+                "channel_id BIGINT NOT NULL, " +
+                "role_id BIGINT NOT NULL, " +
+                "PRIMARY KEY (pom_id))";
+
+        connection.prepareStatement(query).execute();
+    }
+
+    private static void createUsersTable() throws SQLException {
+        String query = "CREATE TABLE IF NOT EXISTS users" +
+                "(user_id BIGINT NOT NULL, " +
+                "pom_id INT NOT NULL, " +
+                "PRIMARY KEY (user_id))";
 
         connection.prepareStatement(query).execute();
     }
