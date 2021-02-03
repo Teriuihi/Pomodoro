@@ -1,9 +1,10 @@
 package com.teri.alttd.Commands;
 
+import com.teri.alttd.Utilities.HelpMessageBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class Study {
+public class StudyCommand {
     String command;
     String[] args;
     GuildMessageReceivedEvent event;
@@ -14,7 +15,7 @@ public class Study {
      * @param args Arguments that were given with that command.
      * @param event The event that started the command.
      */
-    public Study(String command, String[] args, GuildMessageReceivedEvent event) {
+    public StudyCommand(String command, String[] args, GuildMessageReceivedEvent event) {
         this.command = command;
         this.args = args;
         this.event = event;
@@ -27,7 +28,7 @@ public class Study {
     public void runCommand(char prefix){
         TextChannel channel = event.getChannel();
         if (args.length < 6){
-            channel.sendMessage(HelpMessageBuilder.buildMessage(HelpMessageBuilder.HelpType.STUDY, prefix)).queue();
+            channel.sendMessage(HelpMessageBuilder.buildMessage(prefix, HelpMessageBuilder.HelpType.STUDY)).queue();
         } else {
             //TODO run command
         }
