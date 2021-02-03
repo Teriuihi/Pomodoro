@@ -1,9 +1,9 @@
 package com.teri.alttd.Scheduling;
 
 import com.teri.alttd.Cache.PomGroups;
-import com.teri.alttd.FileManagement.Log;
 import com.teri.alttd.Main;
 import com.teri.alttd.Objects.Pom;
+import com.teri.alttd.Utilities.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -18,12 +18,14 @@ public class PomJob implements Job {
      */
     @Override
     public void execute(JobExecutionContext jobExecutionContext) {
-        Pom pom = PomGroups.getPom(jobExecutionContext.getMergedJobDataMap().getLongValue("pomId"));
+        int pomId = jobExecutionContext.getMergedJobDataMap().getInt("pomId");
+        Pom pom = PomGroups.getPom(pomId);
+        if (Utils.isNull(this, pom, "getting pom: " + pomId)) return;
         Guild guild = Main.jda.getGuildById(pom.getGuildId());
-        if (isNull(guild, "getting guild: " + pom.getGuildId())) return;
+        if (Utils.isNull(this, guild, "getting guild: " + pom.getGuildId())) return;
 
         TextChannel channel = guild.getTextChannelById(pom.getChannelId());
-        if (isNull(channel, "getting textChannel" + pom.getChannelId())) return;
+        if (Utils.isNull(this, channel, "getting textChannel" + pom.getChannelId())) return;
 
         Member member = guild.getMemberById(pom.getOwnerId());
         if (member == null){
@@ -40,7 +42,7 @@ public class PomJob implements Job {
      * @param pom The pom we are doing this for
      */
     private void sendMessage(TextChannel channel, Member member, Pom pom){
-        isNull(member, "retrieving member");
+        Utils.isNull(this, member, "retrieving member");
         channel.sendMessage(pom.getEmbeddedMessage(member, pom.sessionActive())).queue();
 
         if (pom.getCurrentCycle() >= pom.getCyclesAmount()){
@@ -52,19 +54,5 @@ public class PomJob implements Job {
                 pom.startSession();
             }
         }
-    }
-
-    /**
-     * Check if an object is null and if it is log it
-     * @param object Object to check
-     * @param action Action that was taken that should have resulted in the object not being null
-     * @return true if the object is null
-     */
-    private boolean isNull(Object object, String action){
-        if (object == null) {
-            new Log(Log.LogType.NULL).appendLog("Unexpected null at " + this.getClass().getName() + " during the following action: " + action);
-            return true;
-        }
-        return false;
     }
 }
