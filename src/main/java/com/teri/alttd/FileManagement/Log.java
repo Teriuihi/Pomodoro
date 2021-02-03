@@ -24,7 +24,8 @@ public class Log {
     public enum LogType {
         ERROR("errorLog.txt", true),
         SQL("sqlLog.txt", true),
-        SHUTDOWN("shutdown.txt", false);
+        SHUTDOWN("shutdown.txt", false),
+        NULL("unexpectedNull.txt", true);
 
         private final String logName;
         private final boolean useDate;
