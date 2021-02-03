@@ -6,6 +6,7 @@ import com.teri.alttd.Main;
 import com.teri.alttd.Queries.PomQueries;
 import com.teri.alttd.Queries.UserQueries;
 import com.teri.alttd.Scheduling.PomScheduler;
+import com.teri.alttd.Utilities.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -258,23 +259,9 @@ public class Pom {
      */
     private void deleteRole() {
         Guild guild = Main.jda.getGuildById(guildId);
-        if (isNull(guild, "getting guild " + guildId + " to delete role")) return;
+        if (Utils.isNull(this, guild, "getting guild " + guildId + " to delete role")) return;
         Role role = guild.getRoleById(roleId);
-        if (isNull(role, "getting role " + roleId + " to delete the role")) return;
+        if (Utils.isNull(this, role, "getting role " + roleId + " to delete the role")) return;
         role.delete().queue();
-    }
-
-    /**
-     * Check if an object is null and if it is log it
-     * @param object Object to check
-     * @param action Action that was taken that should have resulted in the object not being null
-     * @return true if the object is null
-     */
-    private boolean isNull(Object object, String action){
-        if (object == null) {
-            new Log(Log.LogType.NULL).appendLog("Unexpected null at " + this.getClass().getName() + " during the following action: " + action);
-            return true;
-        }
-        return false;
     }
 }
