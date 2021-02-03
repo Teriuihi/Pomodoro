@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class UserQueries {
-    private final static String addUserQuery = "INSERT INTO users (user_id, pom_id) VALUES (?, ?)";
+    private final static String addUserQuery = "INSERT INTO users (user_id, pom_id) VALUES (?, ?) ON DUPLICATE KEY UPDATE pom_id = ?";
     private final static String deleteUserQuery = "DELETE FROM users WHERE user_id = ?";
     private final static String deleteAllUsersQuery = "DELETE FROM users WHERE pom_id = ?";
 
@@ -17,6 +17,7 @@ public class UserQueries {
 
             statement.setLong(1, userId);
             statement.setInt(2, pomId);
+            statement.setInt(3, pomId);
 
             statement.execute();
         } catch (SQLException e) {
