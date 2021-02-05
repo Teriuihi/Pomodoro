@@ -25,24 +25,24 @@ public class Pom {
     private final long ownerId;
     private final int sessionLength;
     private final int breakLength;
-    private final int cyclesAmount;
+    private final int sessionAmount;
     private final long guildId;
     private final long channelId;
     private final long roleId;
     private Date nextBreak;
     private Date nextSession;
-    private int currentCycle = 0;
+    private int currentSession = 0;
     private boolean active;
     private boolean sessionActive;
     private ArrayList<Long> users;
 
-    public Pom(int pomId, long ownerId, int sessionLength, int breakLength, int cyclesAmount, long guildId,
+    public Pom(int pomId, long ownerId, int sessionLength, int breakLength, int sessionAmount, long guildId,
                long channelId, long roleId, boolean active) {
         this.pomId = pomId;
         this.ownerId = ownerId;
         this.sessionLength = sessionLength;
         this.breakLength = breakLength;
-        this.cyclesAmount = cyclesAmount;
+        this.sessionAmount = sessionAmount;
         this.guildId = guildId;
         this.channelId = channelId;
         this.roleId = roleId;
@@ -70,8 +70,12 @@ public class Pom {
         return breakLength;
     }
 
-    public int getCyclesAmount() {
-        return cyclesAmount;
+    public int getSessionAmount() {
+        return sessionAmount;
+    }
+
+    public long getRoleId() {
+        return roleId;
     }
 
     public long getGuildId() {
@@ -90,8 +94,8 @@ public class Pom {
         return nextSession;
     }
 
-    public int getCurrentCycle() {
-        return currentCycle;
+    public int getCurrentSession() {
+        return currentSession;
     }
 
     public boolean isActive() {
@@ -123,7 +127,7 @@ public class Pom {
      * @return if the session started successfully.
      */
     public boolean startSession(){
-        if (currentCycle >= cyclesAmount){
+        if (currentSession >= sessionAmount){
             delete();
             return false;
         }
@@ -131,7 +135,7 @@ public class Pom {
         Calendar calendar = Calendar.getInstance();
 
         calendar.add(Calendar.MINUTE, sessionLength);
-        currentCycle++;
+        currentSession++;
         nextBreak = new Date(calendar.getTimeInMillis());
         sessionActive = true;
         new PomScheduler(this, pomId).schedule();
@@ -203,20 +207,22 @@ public class Pom {
         StringBuilder stringBuilder = new StringBuilder();
 
         if (sessionEnd) {
-            stringBuilder.append("Session ").append(currentCycle).append(" ended! ");
-            if (cyclesAmount - currentCycle == 0) {
+            stringBuilder.append("Session ").append(currentSession).append(" ended! ");
+            if (sessionAmount - currentSession == 0) {
                 stringBuilder.append("This was the final session, good job!");
             } else {
-                stringBuilder.append("There are ").append(cyclesAmount - currentCycle)
-                        .append(" ").append(sessionLength)
-                        .append(" minutes sessions left after this one, but for now take a ")
+                stringBuilder.append("There ").append(sessionAmount - currentSession == 1 ? "is " : "are ")
+                        .append(sessionAmount - currentSession).append(" ").append(sessionLength)
+                        .append(" ").append(sessionLength == 1 ? "minute " : "minutes ")
+                        .append(sessionAmount - currentSession == 1 ? "session " : "sessions ")
+                        .append("left after this one, but for now take a ")
                         .append(breakLength).append(" minute break! ")
                         .append("I will notify you when the next session starts!");
             }
         } else {
-            stringBuilder.append("Break ended! Starting session ").append(currentCycle+1)
-                    .append(" out of ").append(cyclesAmount).append(" now.");
-            if (currentCycle+1 >= cyclesAmount){
+            stringBuilder.append("Break ended! Starting session ").append(currentSession +1)
+                    .append(" out of ").append(sessionAmount).append(" now.");
+            if (currentSession +1 >= sessionAmount){
                 stringBuilder.append(" This will be the final session!");
             }
         }
@@ -225,10 +231,10 @@ public class Pom {
         if (member == null){
             nickname = "invalid member";
         } else {
-            nickname = member.getNickname();
+            nickname = member.getEffectiveName();
         }
 
-        eb.setTitle(nickname + "'s pomodoro");
+        eb.setTitle(nickname + "'s Pomodoro");
         eb.setColor(Color.BLUE);
         eb.setDescription(stringBuilder.toString());
 
@@ -245,7 +251,8 @@ public class Pom {
         PomQueries.deletePom(guildId);
         deleteRole();
         try {
-            Main.schedFact.getScheduler().deleteJob(new JobKey(String.valueOf(pomId), "pom"));
+            Main.schedFact.getScheduler()
+                    .deleteJob(new JobKey(String.valueOf(pomId), "pom_" + (sessionActive ? "cycle" : "break")));
         } catch (SchedulerException e) {
             new Log(Log.LogType.ERROR).appendLog(e.getStackTrace());
             e.printStackTrace();
