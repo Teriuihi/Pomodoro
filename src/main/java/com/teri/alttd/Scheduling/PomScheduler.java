@@ -30,7 +30,7 @@ public class PomScheduler {
     public void schedule(){
         try {
             Scheduler scheduler = Main.schedFact.getScheduler();
-            JobDetail jobDetail = getJobDetail();
+            JobDetail jobDetail = getJobDetail(pom.sessionActive());
 
             scheduler.start();
             Date time;
@@ -51,8 +51,8 @@ public class PomScheduler {
      * Create a JobDetail
      * @return the created JobDetail
      */
-    private JobDetail getJobDetail(){
-        return newJob(PomJob.class).withIdentity(new JobKey(String.valueOf(pomId), "pom")).build();
+    private JobDetail getJobDetail(boolean cycle){
+        return newJob(PomJob.class).withIdentity(new JobKey(String.valueOf(pomId), "pom_" + (cycle ? "cycle" : "break"))).build();
     }
 
     /**
