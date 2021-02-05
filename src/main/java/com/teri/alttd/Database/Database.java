@@ -85,7 +85,10 @@ public class Database {
         String query = "CREATE TABLE IF NOT EXISTS users" +
                 "(user_id BIGINT NOT NULL, " +
                 "pom_id INT NOT NULL, " +
-                "PRIMARY KEY (user_id))";
+                "PRIMARY KEY (user_id)," +
+                "FOREIGN KEY (pom_id) " +
+                "REFERENCES active_poms(pom_id) " +
+                "ON DELETE CASCADE ON UPDATE CASCADE)";
 
         connection.prepareStatement(query).execute();
     }
