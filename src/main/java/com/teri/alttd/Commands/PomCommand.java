@@ -6,8 +6,16 @@ import com.teri.alttd.Objects.Pom;
 import com.teri.alttd.Queries.PomQueries;
 import com.teri.alttd.Queries.UserQueries;
 import com.teri.alttd.Utilities.HelpMessageBuilder;
+import com.teri.alttd.Utilities.NeededPermissions;
+import com.teri.alttd.Utilities.Utils;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.requests.RestAction;
+
+import java.awt.Color;
 
 public class PomCommand {
     String command;
@@ -45,7 +53,11 @@ public class PomCommand {
                             return;
                         }
                     }
-                    event.getGuild().createRole().setName(event.getMember().getNickname()).setMentionable(true)
+                    if (!Utils.hasPermissions(event.getGuild(), event.getChannel(), NeededPermissions.channelPerms.POM_START)
+                            && !Utils.hasPermissions(event.getGuild(), event.getChannel(), NeededPermissions.guildPerms.POM_START)){
+                        return;
+                    }
+                    event.getGuild().createRole().setName(event.getMember().getEffectiveName() + "'s Pomodoro").setMentionable(true)
                             .queue(role -> createPom(event, args, role));
                     return;
                 }
@@ -65,6 +77,20 @@ public class PomCommand {
                                 HelpMessageBuilder.HelpType.POM_PAUSE,
                                 HelpMessageBuilder.HelpType.POM_STOP)).queue();
         }
+    }
+
+    private MessageEmbed pomStarted(Pom pom, String name) {
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setColor(Color.magenta);
+        embedBuilder.setTitle(name + "'s Pomodoro started!");
+        embedBuilder.setDescription("This pom consists of " + pom.getSessionAmount() +
+                (pom.getSessionAmount() == 1 ? " cycle" : " cycles") + ", each lasting " +
+                pom.getSessionLength() + (pom.getSessionLength() == 1 ? " minute" : " minutes") +
+                " with " + pom.getBreakLength() + (pom.getBreakLength() == 1 ? " minute" : " minutes") +
+                " long breaks.\n\n");
+        embedBuilder.appendDescription("You can join this pom by reacting with \uD83D\uDCD6!");
+
+        return embedBuilder.build();
     }
 
     /**
@@ -96,5 +122,11 @@ public class PomCommand {
         Pom pom = new Pom(pomId, ownerId, workTime, breakTime, cycles, guildId, channelId, roleId, true);
         PomGroups.addPom(pomId, pom);
         UserQueries.addUser(ownerId, pomId);
+        event.getGuild().addRoleToMember(event.getMember(), role).queue();
+        event.getChannel().sendMessage(pomStarted(pom, event.getMember().getEffectiveName())).queue(message -> react(message, "\uD83D\uDCD6"));
+    }
+
+    private void react(Message message, String emote) {
+        message.addReaction(emote).queue();
     }
 }
