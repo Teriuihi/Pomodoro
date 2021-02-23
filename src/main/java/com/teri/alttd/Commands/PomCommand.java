@@ -1,6 +1,6 @@
 package com.teri.alttd.Commands;
 
-import com.teri.alttd.Cache.PomGroups;
+import com.teri.alttd.Cache.PomCache;
 import com.teri.alttd.FileManagement.Log;
 import com.teri.alttd.Objects.Pom;
 import com.teri.alttd.Queries.PomQueries;
@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.requests.RestAction;
 
 import java.awt.Color;
 
@@ -106,21 +105,22 @@ public class PomCommand {
         int cycles = Integer.parseInt(args[3]);
         long guildId = event.getGuild().getIdLong();
         long channelId = event.getChannel().getIdLong();
+        long messageId = event.getMessageIdLong();
         long roleId = role.getIdLong();
-        PomQueries.addPom(ownerId, workTime, breakTime, cycles, guildId, channelId, roleId);
-        int pomId = PomQueries.getPomId(ownerId, guildId, channelId, roleId);
+        PomQueries.addPom(ownerId, workTime, breakTime, cycles, guildId, channelId, messageId, roleId);
+        int pomId = PomQueries.getPomId(guildId, channelId, messageId);
 
         if (pomId == 0){
             new Log(Log.LogType.NULL).appendLog("Received 0 as id for pom, this shouldn't be possible" +
                     "guild id: " + guildId + " channel id: " + channelId + " role id: " + roleId);
             role.delete().queue();
             event.getChannel().sendMessage("Something went wrong while scheduling this pom!").queue();
-            PomQueries.specialDelete(ownerId, guildId, channelId, roleId);
+            PomQueries.specialDelete(ownerId, guildId, channelId, messageId, roleId);
             return;
         }
 
         Pom pom = new Pom(pomId, ownerId, workTime, breakTime, cycles, guildId, channelId, roleId, true);
-        PomGroups.addPom(pomId, pom);
+        PomCache.addPom(pomId, pom);
         UserQueries.addUser(ownerId, pomId);
         event.getGuild().addRoleToMember(event.getMember(), role).queue();
         event.getChannel().sendMessage(pomStarted(pom, event.getMember().getEffectiveName())).queue(message -> react(message, "\uD83D\uDCD6"));
