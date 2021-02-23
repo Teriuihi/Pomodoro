@@ -16,7 +16,7 @@ public class PomQueries {
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String pomDelete = "DELETE FROM active_poms WHERE pom_id = ?";
     private static final String pomLoad = "SELECT * FROM active_poms";
-    private static final String getPomIdQuery = "SELECT pom_id FROM active_poms WHERE owner_id = ? AND guild_id = ? AND channel_id = ? AND message_id = ? AND role_id = ?";
+    private static final String getPomIdQuery = "SELECT pom_id FROM active_poms WHERE guild_id = ? AND channel_id = ? AND message_id = ?";
     private static final String specialDelete = "DELETE FROM active_poms WHERE owner_id = ? AND guild_id = ? AND channel_id = ? AND message_id = ? AND role_id = ?";
 
     /**
@@ -63,15 +63,13 @@ public class PomQueries {
         }
     }
 
-    public static int getPomId(long ownerId, long guildId, long channelId, long messageId, long roleId){
+    public static int getPomId(long guildId, long channelId, long messageId){
         try {
             PreparedStatement statement = Database.connection.prepareStatement(getPomIdQuery);
 
-            statement.setLong(1, ownerId);
-            statement.setLong(2, guildId);
-            statement.setLong(3, channelId);
-            statement.setLong(4, messageId);
-            statement.setLong(5, roleId);
+            statement.setLong(1, guildId);
+            statement.setLong(2, channelId);
+            statement.setLong(3, messageId);
 
             ResultSet resultSet = statement.executeQuery();
 
