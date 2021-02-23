@@ -5,7 +5,7 @@ import com.teri.alttd.Queries.PomQueries;
 
 import java.util.HashMap;
 
-public class PomGroups {
+public class PomCache {
     private static final HashMap<Integer, Pom> pomGroups = new HashMap<>(); //All admin groups for all guilds that have added admin groups.
 
     /**
