@@ -12,12 +12,12 @@ import java.util.Map;
 
 public class PomQueries {
     private static final String pomAdd = "INSERT INTO active_poms (owner_id, session_length, break_length, cycles_amount, " +
-            "guild_id, channel_id, role_id) " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            "guild_id, channel_id, message_id, role_id) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String pomDelete = "DELETE FROM active_poms WHERE pom_id = ?";
     private static final String pomLoad = "SELECT * FROM active_poms";
-    private static final String getPomIdQuery = "SELECT pom_id FROM active_poms WHERE owner_id = ? AND guild_id = ? AND channel_id = ? AND role_id = ?";
-    private static final String specialDelete = "DELETE FROM active_poms WHERE owner_id = ? AND guild_id = ? AND channel_id = ? AND role_id = ?";
+    private static final String getPomIdQuery = "SELECT pom_id FROM active_poms WHERE owner_id = ? AND guild_id = ? AND channel_id = ? AND message_id = ? AND role_id = ?";
+    private static final String specialDelete = "DELETE FROM active_poms WHERE owner_id = ? AND guild_id = ? AND channel_id = ? AND message_id = ? AND role_id = ?";
 
     /**
      * Adds a new pom to the database
@@ -26,7 +26,7 @@ public class PomQueries {
      * @param cycles Amount of cycles
      * @param ownerId Id of the user who started the pom
      */
-    public static void addPom(long ownerId, int workTime, int breakTime, int cycles, long guildId, long channelId, long roleId){
+    public static void addPom(long ownerId, int workTime, int breakTime, int cycles, long guildId, long channelId, long messageId, long roleId){
         try {
             PreparedStatement statement = Database.connection.prepareStatement(pomAdd);
 
@@ -36,7 +36,8 @@ public class PomQueries {
             statement.setInt(4, cycles);
             statement.setLong(5, guildId);
             statement.setLong(6, channelId);
-            statement.setLong(7, roleId);
+            statement.setLong(7, messageId);
+            statement.setLong(8, roleId);
 
             statement.execute();
         } catch (SQLException e) {
@@ -62,14 +63,15 @@ public class PomQueries {
         }
     }
 
-    public static int getPomId(long ownerId, long guildId, long channelId, long roleId){
+    public static int getPomId(long ownerId, long guildId, long channelId, long messageId, long roleId){
         try {
             PreparedStatement statement = Database.connection.prepareStatement(getPomIdQuery);
 
             statement.setLong(1, ownerId);
             statement.setLong(2, guildId);
             statement.setLong(3, channelId);
-            statement.setLong(4, roleId);
+            statement.setLong(4, messageId);
+            statement.setLong(5, roleId);
 
             ResultSet resultSet = statement.executeQuery();
 
@@ -121,14 +123,15 @@ public class PomQueries {
      * @param channelId Id of the channel it was created for.
      * @param roleId Id of the role that was created for it.
      */
-    public static void specialDelete(long ownerId, long guildId, long channelId, long roleId) {
+    public static void specialDelete(long ownerId, long guildId, long channelId, long messageId, long roleId) {
         try {
             PreparedStatement statement = Database.connection.prepareStatement(specialDelete);
 
             statement.setLong(1, ownerId);
             statement.setLong(2, guildId);
             statement.setLong(3, channelId);
-            statement.setLong(4, roleId);
+            statement.setLong(4, messageId);
+            statement.setLong(5, roleId);
 
             statement.execute();
         } catch (SQLException e) {
