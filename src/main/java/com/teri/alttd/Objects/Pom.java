@@ -1,6 +1,6 @@
 package com.teri.alttd.Objects;
 
-import com.teri.alttd.Cache.PomGroups;
+import com.teri.alttd.Cache.PomCache;
 import com.teri.alttd.FileManagement.Log;
 import com.teri.alttd.Main;
 import com.teri.alttd.Queries.PomQueries;
@@ -183,7 +183,7 @@ public class Pom {
      * Delete a user from the user list.
      * @param userId user to delete.
      */
-    public void delUser(long userId){
+    public void removeUser(long userId){
         users.remove(userId);
     }
 
@@ -257,7 +257,7 @@ public class Pom {
             new Log(Log.LogType.ERROR).appendLog(e.getStackTrace());
             e.printStackTrace();
         }
-        PomGroups.removePom(pomId);
+        PomCache.removePom(pomId);
         UserQueries.deleteAllUser(pomId);
     }
 
