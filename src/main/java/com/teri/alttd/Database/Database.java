@@ -75,6 +75,7 @@ public class Database {
                 "cycles_amount INT NOT NULL, " +
                 "guild_id BIGINT NOT NULL, " +
                 "channel_id BIGINT NOT NULL, " +
+                "message_id BIGINT NOT NULL, " +
                 "role_id BIGINT NOT NULL, " +
                 "PRIMARY KEY (pom_id))";
 
